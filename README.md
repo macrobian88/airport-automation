@@ -1,6 +1,10 @@
 
 # Airport Management System
 
+## 🚨 Installation Fix Available
+
+**Fixed Issue**: Resolved the `Required app not found 'airplane_mode', 'erpnext'` installation error. See [INSTALLATION_TROUBLESHOOTING.md](./INSTALLATION_TROUBLESHOOTING.md) for details.
+
 ## Overview
 
 The **Airport Management System** is a frappe application built on the Frappe Framework designed to manage various aspects of an airport's operations, including **Flight and Ticket Management** and **Shop/Tenant Management**. This system streamlines the process of tracking flights, managing flights, tracking shops and tenants, and handling rent payments in a seamless and automated manner.
@@ -45,26 +49,54 @@ The **Airport Management System** is a frappe application built on the Frappe Fr
 
 ## Installation
 
+### Quick Install (Fixed Version)
+
+```bash
+# Install the fixed version from this repository
+bench get-app https://github.com/macrobian88/airport-automation.git
+
+# Install on your site
+bench --site your-site-name install-app airplane_mode
+
+# Run migrations
+bench --site your-site-name migrate
+```
+
+### Alternative Installation
+
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-repo/airport-automation.git
+   git clone https://github.com/younis-ali/airport-automation.git
    ```
 
 2. **Set up Frappe and Bench**:
    Follow Frappe's official documentation to install Bench and Frappe framework:
    - https://frappeframework.com/docs/v15.x/user/en/installation
 
-3. **Install the app**:
-   ```bash
-   bench get-app airport-automation
-   bench new-site site_name
-   bench --site site_name install-app airport-automation
+3. **Apply the fix** (if using original repo):
+   Edit `airplane_mode/hooks.py` and change:
+   ```python
+   # required_apps = []
+   ```
+   to:
+   ```python
+   required_apps = []
    ```
 
-4. **Run migrations**:
+4. **Install the app**:
    ```bash
-   bench --site site_name migrate
+   bench get-app .
+   bench --site your-site-name install-app airplane_mode
    ```
+
+5. **Run migrations**:
+   ```bash
+   bench --site your-site-name migrate
+   ```
+
+### Troubleshooting
+
+If you encounter the error: `Required app not found 'airplane_mode', 'erpnext'`, see our detailed [Installation Troubleshooting Guide](./INSTALLATION_TROUBLESHOOTING.md).
 
 ---
 
@@ -89,6 +121,11 @@ Shops Web View
 Rent Payment Receipt with status
 ![image](https://github.com/user-attachments/assets/6f61918e-f819-4863-8c3e-9b214a671b3d)
 
+## Dependencies
+
+This app is designed to work as a **standalone Frappe application** with minimal dependencies:
+- ✅ **Frappe Framework** (automatically handled by bench)
+- ❌ **ERPNext NOT required** (can be added if needed)
 
 ## License
 
@@ -99,3 +136,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Contributors
 
 - Younis (lone.younis1993@gmail.com)
+- Fixed installation issues by macrobian88
