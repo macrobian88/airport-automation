@@ -230,6 +230,47 @@ doc_events = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+# Website Route Rules
+# -------------------
+# Configure website route rules as a list of dictionaries
+# Each rule must be a dictionary with 'from_route' and 'to_route' keys
+
 website_route_rules = [
     {"from_route": "/show-me", "to_route": "show_me"}
 ]
+
+# Additional Common Hooks
+# -----------------------
+# These are commonly used hooks that should be properly formatted
+
+# Clear cache hooks (must be list)
+# clear_cache = [
+#     "airplane_mode.utils.clear_custom_cache"
+# ]
+
+# Boot session hooks (must be list)  
+# boot_session = [
+#     "airplane_mode.utils.boot_session"
+# ]
+
+# Website generators (must be list)
+# website_generators = [
+#     "Flights"
+# ]
+
+# Standard doctypes (must be list if defined)
+# standard_doctypes = [
+#     "Airport Shop",
+#     "Shop Lead", 
+#     "Contract Shop"
+# ]
+
+# Note: If you see "'dict' object has no attribute 'extend'" error,
+# check that all hooks expecting lists are defined as lists [], not dictionaries {}
+# Common hooks that must be lists include:
+# - website_generators
+# - clear_cache  
+# - boot_session
+# - before_request/after_request
+# - scheduler_events values
+# - standard_doctypes

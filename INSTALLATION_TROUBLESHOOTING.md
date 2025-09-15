@@ -15,13 +15,37 @@ This document provides solutions to common installation issues with the Airplane
 2. ✅ Set `required_apps = []` to indicate this is a standalone app
 3. ✅ Added proper documentation about dependency management
 
+### ❌ Error: 'dict' object has no attribute 'extend'
+
+**Problem:** The app installation fails during the hooks loading phase with the error: `AttributeError: 'dict' object has no attribute 'extend'`
+
+**Root Cause:** Some hooks in `hooks.py` are configured as dictionaries when Frappe expects them to be lists. This commonly happens with hooks like:
+- `website_generators`
+- `clear_cache`
+- `boot_session`
+- `standard_doctypes`
+- Other hooks that should be lists but are defined as dictionaries
+
+**Solution Applied:**
+1. ✅ Validated all hook configurations in `hooks.py`
+2. ✅ Ensured list hooks are defined as lists `[]`
+3. ✅ Ensured dict hooks are defined as dictionaries `{}`
+4. ✅ Fixed `website_route_rules` format
+5. ✅ Added comprehensive documentation and examples
+
+**Quick Fix:**
+If you see this error, check your `hooks.py` file and ensure:
+- All hooks expecting lists are defined as `[]` not `{}`
+- `website_route_rules` is a list of dictionaries
+- No hooks are mixing list/dict formats
+
 ### Installation Commands
 
 For a fresh Frappe site installation:
 
 ```bash
-# Install the app in your bench
-bench get-app https://github.com/macrobian88/airport-automation.git
+# Install the app in your bench (fixed version)
+bench get-app https://github.com/macrobian88/airport-automation.git --branch fix-hooks-extend-error
 
 # Install the app on your site
 bench --site your-site-name install-app airplane_mode
@@ -29,6 +53,20 @@ bench --site your-site-name install-app airplane_mode
 # Optional: Migrate if needed
 bench --site your-site-name migrate
 ```
+
+### Diagnostic Tool
+
+We've included a hooks validator script to help diagnose configuration issues:
+
+```bash
+# Run the validator on your hooks.py file
+python validate_hooks.py airplane_mode/hooks.py
+
+# Or just run it from the app directory
+python validate_hooks.py
+```
+
+This will check for common configuration issues and provide specific fixes.
 
 ### Alternative Installation (if using the original repo)
 
@@ -38,9 +76,12 @@ git clone https://github.com/younis-ali/airport-automation.git
 cd airport-automation
 
 # Check out the fixed branch or apply the fix manually
-# Edit airplane_mode/hooks.py and uncomment the required_apps line:
-# Change: # required_apps = []
-# To: required_apps = []
+# Edit airplane_mode/hooks.py and fix the following:
+# 1. Change: # required_apps = []
+#    To: required_apps = []
+# 
+# 2. Ensure all hooks expecting lists are defined as lists []
+# 3. Ensure website_route_rules is properly formatted as list of dicts
 
 # Then install
 bench get-app ./
@@ -69,6 +110,39 @@ required_apps = ["erpnext"]
 required_apps = ["erpnext", "other_app"]
 ```
 
+## Common Hook Configuration Issues
+
+### List Hooks (must be lists [])
+These hooks should always be defined as lists:
+```python
+required_apps = []
+website_generators = ["Flights"]
+clear_cache = ["airplane_mode.utils.clear_cache"]
+boot_session = ["airplane_mode.utils.boot_session"]
+auth_hooks = ["airplane_mode.auth.validate"]
+```
+
+### Dict Hooks (must be dictionaries {})
+These hooks should be defined as dictionaries:
+```python
+doc_events = {
+    "Flights": {
+        "on_update": "airplane_mode.doctype.flights.flights.sync_gate_number"
+    }
+}
+
+scheduler_events = {
+    "daily": ["airplane_mode.tasks.daily"]
+}
+```
+
+### List of Dicts (must be list containing dictionaries)
+```python
+website_route_rules = [
+    {"from_route": "/show-me", "to_route": "show_me"}
+]
+```
+
 ## Verification
 
 After successful installation, verify the app is working:
@@ -81,8 +155,29 @@ After successful installation, verify the app is working:
 ## Support
 
 If you encounter any other installation issues:
-1. Check the bench logs: `bench logs`
-2. Verify your Frappe version compatibility
-3. Ensure all prerequisites are met for Frappe development
+1. Run the hooks validator: `python validate_hooks.py`
+2. Check the bench logs: `bench logs`
+3. Verify your Frappe version compatibility
+4. Ensure all prerequisites are met for Frappe development
 
-This fix resolves the primary installation dependency issue that was preventing the app from being installed on fresh Frappe sites.
+## Error Patterns
+
+### Pattern 1: extend() error
+```
+AttributeError: 'dict' object has no attribute 'extend'
+```
+**Solution:** Check hooks.py for hooks defined as `{}` that should be `[]`
+
+### Pattern 2: Required app not found
+```
+Required app not found 'airplane_mode', 'erpnext'
+```
+**Solution:** Uncomment `required_apps = []` in hooks.py
+
+### Pattern 3: Import errors during installation
+```
+ImportError: No module named 'airplane_mode.something'
+```
+**Solution:** Check that all referenced modules exist and paths are correct
+
+This guide covers the major installation issues and their fixes. The updated repository includes all these fixes and diagnostic tools.
