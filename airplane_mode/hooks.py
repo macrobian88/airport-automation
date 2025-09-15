@@ -4,7 +4,10 @@ app_publisher = "Ambibuzz"
 app_description = "Play with Frappe"
 app_email = "buzz@ambibuzz.com"
 app_license = "mit"
-# required_apps = []
+
+# Required Apps - Set to empty list for standalone installation
+# Add dependencies as needed based on your requirements
+required_apps = []
 
 # Includes in <head>
 # ------------------
