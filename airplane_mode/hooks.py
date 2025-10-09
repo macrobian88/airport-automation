@@ -105,13 +105,13 @@ required_apps = []
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+permission_query_conditions = {
+	"Monthly Invoice": "airplane_mode.airport_shop_management.doctype.monthly_invoice.monthly_invoice.get_permission_query_conditions",
+}
+
+has_permission = {
+	"Monthly Invoice": "airplane_mode.airport_shop_management.doctype.monthly_invoice.monthly_invoice.has_permission",
+}
 
 # DocType Class
 # ---------------
